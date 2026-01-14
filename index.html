@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Team Link Sharing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slack-purple: #4A154B;
+            --slack-dark: #1D1C1D;
+            --slack-light: #F8F8F8;
+            --slack-blue: #1264A3;
+            --slack-green: #2BAC76;
+            --slack-yellow: #ECB22E;
+            --slack-red: #E01E5A;
+            --slack-gray: #616061;
+            --slack-border: #DDDDDD;
+            --slack-hover: #F2F2F2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lato', 'Roboto', sans-serif;
+            background-color: var(--slack-light);
+            color: var(--slack-dark);
+            line-height: 1.5;
+            height: 100vh;
+            display: flex;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 220px;
+            background-color: var(--slack-purple);
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo .tagline {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+        
+        .channels {
+            padding: 0 15px;
+            flex-grow: 1;
+        }
+        
+        .channels h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+        
+        .channel-list {
+            list-style: none;
+        }
+        
+        .channel-item {
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .channel-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .channel-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .channel-item i {
+            font-size: 0.9rem;
+        }
+        
+        .user-profile {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            background-color: var(--slack-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .user-info {
+            flex-grow: 1;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        
+        .user-status {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--slack-border);
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .channel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .channel-header h2 {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+        
+        .channel-header .member-count {
+            color: var(--slack-gray);
+            font-size: 0.9rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .header-btn {
+            background: none;
+            border: none;
+            color: var(--slack-gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .header-btn:hover {
+            background-color: var(--slack-hover);
+            color: var(--slack-dark);
+        }
+        
+        /* Messages/Links Container */
+        .links-container {
+            flex-grow: 1;
+            padding: 20px 25px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        
+        .date-divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .date-divider span {
+            background-color: white;
+            padding: 5px 15px;
+            color: var(--slack-gray);
+            font-size: 0.85rem;
+            border-radius: 20px;
+            border: 1px solid var(--slack-border);
+        }
+        
+        .date-divider:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: var(--slack-border);
+            z-index: -1;
+        }
+        
+        /* Link/Message Item */
+        .link-item {
+            display: flex;
+            padding: 10px 0;
+            position: relative;
+        }
+        
+        .link-item:hover {
+            background-color: var(--slack-hover);
+        }
+        
+        .link-item:hover .message-actions {
+            opacity: 1;
+        }
+        
+        .user-avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            flex-grow: 1;
+            padding-right: 20px;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        
+        .username {
+            font-weight: 900;
+            margin-right: 8px;
+        }
+        
+        .timestamp {
+            color: var(--slack-gray);
+            font-size: 0.85rem;
+        }
+        
+        .link-box {
+            border: 1px solid var(--slack-border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            background-color: var(--slack-light);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .link-url {
+            color: var(--slack-blue);
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .link-url:hover {
+            text-decoration: underline;
+        }
+        
+        .link-domain {
+            font-size: 0.85rem;
+            color: var(--slack-gray);
+        }
+        
+        .message-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .action-btn {
+            background: white;
+            border: 1px solid var(--slack-border);
+            border-radius: 4px;
+            padding: 5px 8px;
+            font-size: 0.8rem;
+            color: var(--slack-gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--slack-hover);
+            color: var(--slack-dark);
+        }
+        
+        .action-btn.delete:hover {
+            background-color: var(--slack-red);
+            color: white;
+            border-color: var(--slack-red);
+        }
+        
+        /* Input Area */
+        .input-area {
+            padding: 20px 25px;
+            background-color: white;
+            border-top: 1px solid var(--slack-border);
+        }
+        
+        .input-container {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid var(--slack-border);
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        
+        .input-container:focus-within {
+            border-color: var(--slack-blue);
+            box-shadow: 0 0 0 1px var(--slack-blue);
+        }
+        
+        .input-container input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            padding: 8px;
+            font-size: 1rem;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-btn {
+            background: none;
+            border: none;
+            color: var(--slack-gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .input-btn:hover {
+            background-color: var(--slack-hover);
+            color: var(--slack-dark);
+        }
+        
+        .send-btn {
+            background-color: var(--slack-purple);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .send-btn:hover {
+            background-color: #3a1245;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--slack-gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--slack-border);
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--slack-green);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            font-weight: 500;
+        }
+        
+        .notification.show {
+            display: flex;
+            animation: slideIn 0.3s, slideOut 0.3s 2.7s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .logo {
+                padding: 0 15px 10px;
+            }
+            
+            .channels {
+                display: none;
+            }
+            
+            .user-profile {
+                padding: 10px 15px;
+            }
+            
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .links-container {
+                padding: 15px;
+            }
+            
+            .input-area {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h1><i class="fab fa-slack"></i>ShareLink</h1>
+            <div class="tagline">Team link sharing</div>
+        </div>
+        
+        <div class="channels">
+            <h3>Channels</h3>
+            <ul class="channel-list">
+                <li class="channel-item active">
+                    <i class="fas fa-hashtag"></i>
+                    <span>general</span>
+                </li>
+                <li class="channel-item">
+                    <i class="fas fa-hashtag"></i>
+                    <span>random</span>
+                </li>
+                <li class="channel-item">
+                    <i class="fas fa-hashtag"></i>
+                    <span>links</span>
+                </li>
+                <li class="channel-item">
+                    <i class="fas fa-hashtag"></i>
+                    <span>resources</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar" id="currentUserAvatar">YO</div>
+            <div class="user-info">
+                <div class="user-name" id="currentUserName">You</div>
+                <div class="user-status" id="currentUserStatus">Online</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="channel-header">
+                <h2>#general</h2>
+                <div class="member-count" id="memberCount">5 members</div>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" title="Channel info">
+                    <i class="far fa-question-circle"></i>
+                </button>
+                <button class="header-btn" title="Notifications">
+                    <i class="far fa-bell"></i>
+                </button>
+                <button class="header-btn" title="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Links Container -->
+        <div class="links-container" id="linksContainer">
+            <div class="date-divider">
+                <span>Today</span>
+            </div>
+            
+            <!-- Links will be dynamically added here -->
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-link"></i>
+                <h3>No links shared yet</h3>
+                <p>Share the first link in #general</p>
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-container">
+                <input type="text" id="linkInput" placeholder="Paste a link and press Enter to share">
+                <div class="input-actions">
+                    <button class="input-btn" title="Formatting options">
+                        <i class="fas fa-font"></i>
+                    </button>
+                    <button class="input-btn" title="Add emoji">
+                        <i class="far fa-smile"></i>
+                    </button>
+                    <button class="send-btn" id="shareBtn">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Link copied to clipboard!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample users with colors
+            const users = [
+                { id: 1, name: "You", initials: "YO", color: "#4A154B", status: "Online" },
+                { id: 2, name: "Alex Johnson", initials: "AJ", color: "#1264A3", status: "Active 2h ago" },
+                { id: 3, name: "Sam Rivera", initials: "SR", color: "#2BAC76", status: "Active 5m ago" },
+                { id: 4, name: "Taylor Kim", initials: "TK", color: "#ECB22E", status: "Active 1h ago" },
+                { id: 5, name: "Jordan Lee", initials: "JL", color: "#E01E5A", status: "Away" }
+            ];
+            
+            // Set current user
+            let currentUser = users[0];
+            document.getElementById('currentUserAvatar').textContent = currentUser.initials;
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            document.getElementById('currentUserStatus').textContent = currentUser.status;
+            
+            // Update member count
+            document.getElementById('memberCount').textContent = `${users.length} members`;
+            
+            // Load links from localStorage
+            loadLinks();
+            
+            // Share button click event
+            document.getElementById('shareBtn').addEventListener('click', shareLink);
+            
+            // Allow Enter key to submit link
+            document.getElementById('linkInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    shareLink();
+                }
+            });
+            
+            // Function to share a new link
+            function shareLink() {
+                const linkInput = document.getElementById('linkInput');
+                const url = linkInput.value.trim();
+                
+                // Validate URL
+                if (!url) {
+                    showNotification('Please enter a URL', 'error');
+                    return;
+                }
+                
+                // Ensure URL has protocol
+                let formattedUrl = url;
+                if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+                    formattedUrl = 'https://' + formattedUrl;
+                }
+                
+                // Get domain for display
+                let domain = "Link";
+                try {
+                    domain = new URL(formattedUrl).hostname.replace('www.', '');
+                } catch (e) {
+                    // If URL parsing fails, keep default
+                }
+                
+                // Create link object with user info
+                const link = {
+                    id: Date.now(),
+                    url: formattedUrl,
+                    domain: domain,
+                    timestamp: new Date().toISOString(),
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    userInitials: currentUser.initials,
+                    userColor: currentUser.color
+                };
+                
+                // Get existing links
+                let links = JSON.parse(localStorage.getItem('slackshare-links') || '[]');
+                
+                // Add new link to the beginning
+                links.unshift(link);
+                
+                // Keep only the last 50 links
+                if (links.length > 50) {
+                    links = links.slice(0, 50);
+                }
+                
+                // Save to l
