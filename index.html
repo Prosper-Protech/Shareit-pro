@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Archive - Share & Save Links</title>
+    <title>Global Link Archive - Share Links Worldwide</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
             color: #333;
             min-height: 100vh;
             padding: 20px;
@@ -23,21 +23,38 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
         
         header {
-            background: linear-gradient(135deg, #4a6de5 0%, #3a5bd0 100%);
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
             color: white;
             padding: 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .globe-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 4rem;
+            opacity: 0.2;
+            animation: spin 30s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         h1 {
-            font-size: 2.8rem;
+            font-size: 3rem;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -48,34 +65,37 @@
         .tagline {
             font-size: 1.2rem;
             opacity: 0.9;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto 20px;
         }
         
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+        .global-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
         
-        .stat-item {
+        .stat-card {
             background: rgba(255, 255, 255, 0.15);
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 15px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .stat-number {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             display: block;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
         }
         
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.8;
+            margin-top: 5px;
         }
         
         .main-content {
@@ -86,7 +106,7 @@
         .share-section {
             flex: 1;
             padding: 40px;
-            background: #f8f9ff;
+            background: #f8fafc;
             border-right: 1px solid #eaeaea;
         }
         
@@ -99,13 +119,15 @@
         .section-title {
             font-size: 1.5rem;
             margin-bottom: 25px;
-            color: #4a6de5;
+            color: #2c3e50;
             display: flex;
             align-items: center;
             gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
         }
         
-        .share-box {
+        .share-form {
             background: white;
             border-radius: 15px;
             padding: 30px;
@@ -113,7 +135,7 @@
             margin-bottom: 30px;
         }
         
-        .input-group {
+        .form-group {
             margin-bottom: 20px;
         }
         
@@ -121,36 +143,44 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #555;
+            color: #2c3e50;
         }
         
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 15px;
             border: 2px solid #e1e8ff;
             border-radius: 10px;
             font-size: 1rem;
             transition: all 0.3s;
+            background: white;
         }
         
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #4a6de5;
             box-shadow: 0 0 0 3px rgba(74, 109, 229, 0.1);
         }
         
         textarea {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
         }
         
-        .button-group {
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn-group {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
+            margin-top: 30px;
         }
         
-        button {
+        .btn {
             padding: 15px 30px;
             border: none;
             border-radius: 10px;
@@ -165,15 +195,14 @@
         }
         
         .btn-primary {
-            background: #4a6de5;
+            background: linear-gradient(135deg, #4a6de5, #3a5bd0);
             color: white;
             flex: 1;
         }
         
         .btn-primary:hover {
-            background: #3a5bd0;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(58, 91, 208, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(58, 91, 208, 0.4);
         }
         
         .btn-secondary {
@@ -183,45 +212,43 @@
         
         .btn-secondary:hover {
             background: #e1e8ff;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
         
-        .btn-danger {
-            background: #ff4757;
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
         }
         
-        .btn-danger:hover {
-            background: #ff3742;
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
         }
         
         .file-info {
-            background: #f0f4ff;
-            border-radius: 10px;
-            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc, #eef2ff);
+            border-radius: 15px;
+            padding: 25px;
             margin-top: 30px;
+            border: 2px dashed #c5d3ff;
         }
         
         .file-info h3 {
             margin-bottom: 15px;
-            color: #4a6de5;
+            color: #2c3e50;
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .file-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .file-detail {
+        .file-path {
             background: white;
-            padding: 15px;
+            padding: 12px 15px;
             border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
             border: 1px solid #e1e8ff;
+            word-break: break-all;
         }
         
         .links-container {
@@ -233,89 +260,117 @@
             background: #f8f9ff;
         }
         
-        .link-item {
+        .link-card {
             background: white;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
             border-left: 5px solid #4a6de5;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s;
+            transition: all 0.3s;
+            position: relative;
         }
         
-        .link-item:hover {
+        .link-card:hover {
             transform: translateX(5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
         
         .link-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 10px;
+        }
+        
+        .link-title {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex: 1;
+        }
+        
+        .link-category {
+            background: #e8f4ff;
+            color: #2980b9;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
         
         .link-url {
             color: #4a6de5;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-weight: 500;
             word-break: break-all;
-            flex: 1;
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            border: 1px solid #e1e8ff;
         }
         
         .link-url:hover {
-            text-decoration: underline;
-        }
-        
-        .link-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            background: #eef2ff;
         }
         
         .link-description {
-            color: #666;
+            color: #555;
             margin: 10px 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }
         
-        .link-meta {
+        .link-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid #f0f0f0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #888;
             flex-wrap: wrap;
             gap: 10px;
         }
         
-        .link-tags {
+        .link-actions {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
         }
         
-        .tag {
-            background: #f0f4ff;
-            color: #4a6de5;
-            padding: 4px 10px;
-            border-radius: 20px;
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 0.8rem;
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn.copy {
+            background: #e8f4ff;
+            color: #2980b9;
+        }
+        
+        .action-btn.copy:hover {
+            background: #d4e7ff;
+        }
+        
+        .action-btn.view {
+            background: #e8f6ff;
+            color: #3498db;
+        }
+        
+        .action-btn.save {
+            background: #e8f8f4;
+            color: #27ae60;
         }
         
         .empty-state {
@@ -334,7 +389,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #4a6de5;
+            background: linear-gradient(135deg, #4a6de5, #3a5bd0);
             color: white;
             padding: 15px 25px;
             border-radius: 10px;
@@ -361,6 +416,34 @@
             to { opacity: 0; }
         }
         
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .page-btn {
+            padding: 8px 15px;
+            border: 1px solid #e1e8ff;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-btn.active {
+            background: #4a6de5;
+            color: white;
+            border-color: #4a6de5;
+        }
+        
+        .page-btn:hover:not(.active) {
+            background: #f0f4ff;
+        }
+        
         @media (max-width: 1024px) {
             .main-content {
                 flex-direction: column;
@@ -373,6 +456,10 @@
             .share-section {
                 border-right: none;
                 border-bottom: 1px solid #eaeaea;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -387,24 +474,22 @@
                 gap: 10px;
             }
             
+            .globe-icon {
+                font-size: 3rem;
+                top: 10px;
+                right: 10px;
+            }
+            
             .share-section, .links-section {
                 padding: 30px 20px;
             }
             
-            .button-group {
+            .btn-group {
                 flex-direction: column;
             }
             
-            button {
+            .btn {
                 width: 100%;
-            }
-            
-            .link-header {
-                flex-direction: column;
-            }
-            
-            .link-actions {
-                align-self: flex-end;
             }
         }
     </style>
@@ -412,21 +497,26 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-link"></i> Link Archive</h1>
-            <p class="tagline">Share links and automatically save them to a file. All links are archived and accessible to everyone.</p>
+            <i class="fas fa-globe-americas globe-icon"></i>
+            <h1><i class="fas fa-link"></i> Global Link Archive</h1>
+            <p class="tagline">Share links with the world. Every link is saved to <code>links.txt</code> and visible to everyone globally.</p>
             
-            <div class="stats">
-                <div class="stat-item">
+            <div class="global-stats">
+                <div class="stat-card">
                     <span class="stat-number" id="totalLinks">0</span>
-                    <span class="stat-label">Total Links</span>
+                    <span class="stat-label">Links Shared Worldwide</span>
                 </div>
-                <div class="stat-item">
+                <div class="stat-card">
+                    <span class="stat-number" id="todayLinks">0</span>
+                    <span class="stat-label">Links Today</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="countries">24</span>
+                    <span class="stat-label">Countries</span>
+                </div>
+                <div class="stat-card">
                     <span class="stat-number" id="fileSize">0 KB</span>
-                    <span class="stat-label">File Size</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="activeUsers">1</span>
-                    <span class="stat-label">Active Users</span>
+                    <span class="stat-label">Archive Size</span>
                 </div>
             </div>
         </header>
@@ -434,61 +524,71 @@
         <div class="main-content">
             <!-- Share Section -->
             <div class="share-section">
-                <h2 class="section-title"><i class="fas fa-share-alt"></i> Share a Link</h2>
+                <h2 class="section-title"><i class="fas fa-upload"></i> Share a Link with the World</h2>
                 
-                <div class="share-box">
-                    <div class="input-group">
-                        <label for="urlInput"><i class="fas fa-link"></i> URL to Share</label>
-                        <input type="url" id="urlInput" placeholder="https://example.com">
+                <div class="share-form">
+                    <div class="form-group">
+                        <label for="urlInput"><i class="fas fa-link"></i> Link URL *</label>
+                        <input type="url" id="urlInput" placeholder="https://example.com" required>
                     </div>
                     
-                    <div class="input-group">
-                        <label for="titleInput"><i class="fas fa-heading"></i> Title (Optional)</label>
-                        <input type="text" id="titleInput" placeholder="Give this link a title">
+                    <div class="form-group">
+                        <label for="titleInput"><i class="fas fa-heading"></i> Title *</label>
+                        <input type="text" id="titleInput" placeholder="Enter link title" required>
                     </div>
                     
-                    <div class="input-group">
-                        <label for="descriptionInput"><i class="fas fa-align-left"></i> Description (Optional)</label>
+                    <div class="form-group">
+                        <label for="descriptionInput"><i class="fas fa-align-left"></i> Description</label>
                         <textarea id="descriptionInput" placeholder="Describe what this link is about..."></textarea>
                     </div>
                     
-                    <div class="input-group">
-                        <label for="tagsInput"><i class="fas fa-tags"></i> Tags (Optional)</label>
-                        <input type="text" id="tagsInput" placeholder="web, tools, resources (separate with commas)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="categoryInput"><i class="fas fa-tag"></i> Category</label>
+                            <select id="categoryInput">
+                                <option value="general">General</option>
+                                <option value="technology">Technology</option>
+                                <option value="education">Education</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="news">News</option>
+                                <option value="tools">Tools</option>
+                                <option value="social">Social Media</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="countryInput"><i class="fas fa-globe"></i> Country (Optional)</label>
+                            <input type="text" id="countryInput" placeholder="Your country">
+                        </div>
                     </div>
                     
-                    <div class="button-group">
-                        <button class="btn-primary" id="shareBtn">
-                            <i class="fas fa-share"></i> Share Link & Save to File
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="shareBtn">
+                            <i class="fas fa-share-alt"></i> Share Link Globally
                         </button>
-                        <button class="btn-secondary" id="downloadBtn">
-                            <i class="fas fa-download"></i> Download Links File
+                        <button class="btn btn-secondary" id="viewFileBtn">
+                            <i class="fas fa-file-alt"></i> View links.txt
                         </button>
                     </div>
                 </div>
                 
                 <div class="file-info">
-                    <h3><i class="fas fa-file-alt"></i> Links Archive File</h3>
-                    <p>All shared links are automatically saved to a text file. You can download the complete archive anytime.</p>
+                    <h3><i class="fas fa-database"></i> Global Archive File</h3>
+                    <p>Every shared link is automatically saved to a central text file accessible worldwide.</p>
                     
-                    <div class="file-details">
-                        <div class="file-detail">
-                            <strong>Filename:</strong> links_archive.txt
-                        </div>
-                        <div class="file-detail">
-                            <strong>Format:</strong> JSON Lines
-                        </div>
-                        <div class="file-detail">
-                            <strong>Updated:</strong> <span id="lastUpdated">Never</span>
-                        </div>
+                    <div class="file-path">
+                        https://yourdomain.com/links.txt
                     </div>
                     
-                    <div class="button-group" style="margin-top: 20px;">
-                        <button class="btn-secondary" id="clearAllBtn">
-                            <i class="fas fa-trash"></i> Clear All Links
+                    <p><strong>File Format:</strong> Each line contains: <code>TIMESTAMP|URL|TITLE|CATEGORY|DESCRIPTION|COUNTRY</code></p>
+                    
+                    <div class="btn-group" style="margin-top: 20px;">
+                        <button class="btn btn-success" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download links.txt
                         </button>
-                        <button class="btn-secondary" id="exportJsonBtn">
-                            <i class="fas fa-file-export"></i> Export as JSON
+                        <button class="btn btn-danger" id="clearLocalBtn">
+                            <i class="fas fa-trash"></i> Clear Local Cache
                         </button>
                     </div>
                 </div>
@@ -497,10 +597,10 @@
             <!-- Links Display Section -->
             <div class="links-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <h2 class="section-title"><i class="fas fa-list"></i> All Shared Links</h2>
+                    <h2 class="section-title"><i class="fas fa-list"></i> Global Links Archive</h2>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="searchInput" placeholder="Search links..." style="padding: 10px 15px; border-radius: 8px; border: 2px solid #e1e8ff; width: 200px;">
-                        <button class="btn-secondary" id="refreshBtn">
+                        <input type="text" id="searchInput" placeholder="Search global links..." style="padding: 10px 15px; border-radius: 8px; border: 2px solid #e1e8ff; width: 200px;">
+                        <button class="btn btn-secondary" id="refreshBtn">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
                     </div>
@@ -509,10 +609,14 @@
                 <div class="links-container" id="linksContainer">
                     <!-- Links will be loaded here -->
                     <div class="empty-state" id="emptyState">
-                        <i class="fas fa-link"></i>
+                        <i class="fas fa-globe"></i>
                         <h3>No links shared yet</h3>
-                        <p>Be the first to share a link! It will be saved to the archive file.</p>
+                        <p>Be the first to share a link with the world!</p>
                     </div>
+                </div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be added here -->
                 </div>
             </div>
         </div>
@@ -521,10 +625,16 @@
     <!-- Notification -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
-        <span id="notificationText">Link shared successfully!</span>
+        <span id="notificationText">Link shared globally!</span>
     </div>
 
     <script>
+        // Global configuration
+        const LINKS_FILE_URL = 'links.txt';  // In production, this would be your server URL
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let allLinks = [];
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize the application
             initApp();
@@ -535,27 +645,27 @@
             const urlInput = document.getElementById('urlInput');
             const titleInput = document.getElementById('titleInput');
             const descriptionInput = document.getElementById('descriptionInput');
-            const tagsInput = document.getElementById('tagsInput');
+            const categoryInput = document.getElementById('categoryInput');
+            const countryInput = document.getElementById('countryInput');
             const shareBtn = document.getElementById('shareBtn');
+            const viewFileBtn = document.getElementById('viewFileBtn');
             const downloadBtn = document.getElementById('downloadBtn');
-            const clearAllBtn = document.getElementById('clearAllBtn');
-            const exportJsonBtn = document.getElementById('exportJsonBtn');
+            const clearLocalBtn = document.getElementById('clearLocalBtn');
             const refreshBtn = document.getElementById('refreshBtn');
             const searchInput = document.getElementById('searchInput');
             const linksContainer = document.getElementById('linksContainer');
             const emptyState = document.getElementById('emptyState');
+            const pagination = document.getElementById('pagination');
             
             // Stats elements
             const totalLinksEl = document.getElementById('totalLinks');
+            const todayLinksEl = document.getElementById('todayLinks');
             const fileSizeEl = document.getElementById('fileSize');
-            const lastUpdatedEl = document.getElementById('lastUpdated');
-            const activeUsersEl = document.getElementById('activeUsers');
             
-            // Initialize file data in localStorage if not exists
-            if (!localStorage.getItem('linksArchive')) {
-                localStorage.setItem('linksArchive', JSON.stringify([]));
-                localStorage.setItem('linksFile', '');
-                localStorage.setItem('lastUpdated', '');
+            // Initialize local storage for simulation
+            if (!localStorage.getItem('globalLinks')) {
+                localStorage.setItem('globalLinks', JSON.stringify([]));
+                localStorage.setItem('linksTxt', '');
             }
             
             // Load and display links
@@ -567,28 +677,27 @@
             // Set up event listeners
             setupEventListeners();
             
-            // Function to set up event listeners
             function setupEventListeners() {
                 // Share button click
                 shareBtn.addEventListener('click', shareLink);
                 
+                // View file button click
+                viewFileBtn.addEventListener('click', viewLinksFile);
+                
                 // Download button click
                 downloadBtn.addEventListener('click', downloadLinksFile);
                 
-                // Clear all button click
-                clearAllBtn.addEventListener('click', clearAllLinks);
+                // Clear local cache button
+                clearLocalBtn.addEventListener('click', clearLocalCache);
                 
-                // Export JSON button click
-                exportJsonBtn.addEventListener('click', exportAsJson);
-                
-                // Refresh button click
+                // Refresh button
                 refreshBtn.addEventListener('click', () => {
                     loadAndDisplayLinks();
-                    showNotification('Links refreshed');
+                    showNotification('Links refreshed from global archive');
                 });
                 
                 // Search input
-                searchInput.addEventListener('input', filterLinks);
+                searchInput.addEventListener('input', filterAndDisplayLinks);
                 
                 // Enter key to share link
                 urlInput.addEventListener('keypress', function(e) {
@@ -598,49 +707,40 @@
                 });
             }
             
-            // Function to share a link
-            function shareLink() {
+            async function shareLink() {
                 const url = urlInput.value.trim();
                 const title = titleInput.value.trim();
                 const description = descriptionInput.value.trim();
-                const tags = tagsInput.value.trim();
+                const category = categoryInput.value;
+                const country = countryInput.value.trim() || 'Unknown';
                 
-                // Validate URL
-                if (!url) {
-                    showNotification('Please enter a URL', 'error');
-                    urlInput.focus();
+                // Validation
+                if (!url || !title) {
+                    showNotification('Please fill in all required fields', 'error');
                     return;
                 }
                 
-                // Ensure URL has protocol
+                // Validate URL
                 let formattedUrl = url;
                 if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
                     formattedUrl = 'https://' + formattedUrl;
                 }
                 
-                // Validate URL format
                 try {
                     new URL(formattedUrl);
                 } catch (e) {
                     showNotification('Please enter a valid URL', 'error');
-                    urlInput.focus();
                     return;
                 }
-                
-                // Extract domain for display
-                const domain = extractDomain(formattedUrl);
-                
-                // Parse tags
-                const tagsArray = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
                 
                 // Create link object
                 const link = {
                     id: Date.now(),
                     url: formattedUrl,
-                    title: title || `Link to ${domain}`,
-                    description: description || `Shared link to ${domain}`,
-                    tags: tagsArray,
-                    domain: domain,
+                    title: title,
+                    description: description || 'No description',
+                    category: category,
+                    country: country,
                     timestamp: new Date().toISOString(),
                     date: new Date().toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -649,266 +749,310 @@
                         hour: '2-digit',
                         minute: '2-digit'
                     }),
-                    sharedBy: 'You'
+                    ip: 'global' // In production, this would be the user's IP
                 };
                 
-                // Save link to archive
-                saveLinkToArchive(link);
+                // In a real implementation, this would send data to a server
+                // For now, we'll simulate it with localStorage
+                await saveLinkToFile(link);
                 
                 // Clear form
                 urlInput.value = '';
                 titleInput.value = '';
                 descriptionInput.value = '';
-                tagsInput.value = '';
+                countryInput.value = '';
                 
-                // Reload and display links
-                loadAndDisplayLinks();
+                // Reload links
+                await loadAndDisplayLinks();
                 
                 // Update stats
                 updateStats();
                 
-                // Show success notification
-                showNotification(`Link shared and saved to file!`);
+                // Show success
+                showNotification(`Link shared globally! Added to links.txt`);
             }
             
-            // Function to extract domain from URL
-            function extractDomain(url) {
+            async function saveLinkToFile(link) {
+                // Get current links
+                let links = JSON.parse(localStorage.getItem('globalLinks') || '[]');
+                
+                // Add new link to beginning
+                links.unshift(link);
+                
+                // Save to localStorage (simulating server storage)
+                localStorage.setItem('globalLinks', JSON.stringify(links));
+                
+                // Update the links.txt file content
+                updateLinksTxtFile(links);
+                
+                // In a real implementation, you would send this to your server
+                // Example using fetch API:
+                /*
                 try {
-                    return new URL(url).hostname.replace('www.', '');
-                } catch (e) {
-                    return 'unknown';
+                    const response = await fetch('/save-link.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(link)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to save link');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error saving link:', error);
+                    // Fallback to localStorage
+                    throw error;
+                }
+                */
+            }
+            
+            function updateLinksTxtFile(links) {
+                // Create links.txt content in pipe-separated format
+                let fileContent = '';
+                links.forEach(link => {
+                    // Format: TIMESTAMP|URL|TITLE|CATEGORY|DESCRIPTION|COUNTRY
+                    const line = [
+                        link.timestamp,
+                        link.url,
+                        link.title.replace(/\|/g, ' '), // Remove pipes from title
+                        link.category,
+                        link.description.replace(/\|/g, ' ').replace(/\n/g, ' '), // Remove pipes and newlines
+                        link.country
+                    ].join('|');
+                    
+                    fileContent += line + '\n';
+                });
+                
+                // Save to localStorage (simulating file storage)
+                localStorage.setItem('linksTxt', fileContent);
+                
+                // Update last updated time
+                localStorage.setItem('lastUpdated', new Date().toISOString());
+            }
+            
+            async function loadAndDisplayLinks() {
+                try {
+                    // In a real implementation, fetch from server
+                    // const response = await fetch(LINKS_FILE_URL);
+                    // const fileContent = await response.text();
+                    // allLinks = parseLinksTxtFile(fileContent);
+                    
+                    // For demo, use localStorage
+                    const linksData = localStorage.getItem('globalLinks');
+                    allLinks = linksData ? JSON.parse(linksData) : [];
+                    
+                    displayLinksPage(1);
+                    
+                } catch (error) {
+                    console.error('Error loading links:', error);
+                    showNotification('Error loading links. Using local cache.', 'error');
+                    
+                    // Fallback to localStorage
+                    const linksData = localStorage.getItem('globalLinks');
+                    allLinks = linksData ? JSON.parse(linksData) : [];
+                    displayLinksPage(1);
                 }
             }
             
-            // Function to save link to archive
-            function saveLinkToArchive(link) {
-                // Get current archive
-                let archive = JSON.parse(localStorage.getItem('linksArchive') || '[]');
+            function parseLinksTxtFile(fileContent) {
+                const lines = fileContent.trim().split('\n');
+                const links = [];
                 
-                // Add new link to beginning
-                archive.unshift(link);
-                
-                // Save to localStorage
-                localStorage.setItem('linksArchive', JSON.stringify(archive));
-                
-                // Update file content
-                updateLinksFile();
-                
-                // Update last updated timestamp
-                const now = new Date();
-                localStorage.setItem('lastUpdated', now.toISOString());
-                lastUpdatedEl.textContent = now.toLocaleString();
-            }
-            
-            // Function to update the links file content
-            function updateLinksFile() {
-                const archive = JSON.parse(localStorage.getItem('linksArchive') || '[]');
-                
-                // Create text file content in JSON Lines format (one JSON object per line)
-                let fileContent = '';
-                archive.forEach(link => {
-                    fileContent += JSON.stringify(link) + '\n';
+                lines.forEach((line, index) => {
+                    const parts = line.split('|');
+                    if (parts.length >= 6) {
+                        links.push({
+                            id: index,
+                            timestamp: parts[0],
+                            url: parts[1],
+                            title: parts[2],
+                            category: parts[3],
+                            description: parts[4],
+                            country: parts[5],
+                            date: new Date(parts[0]).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })
+                        });
+                    }
                 });
                 
-                // Save to localStorage
-                localStorage.setItem('linksFile', fileContent);
+                return links.reverse(); // Newest first
             }
             
-            // Function to load and display links
-            function loadAndDisplayLinks() {
-                const archive = JSON.parse(localStorage.getItem('linksArchive') || '[]');
+            function displayLinksPage(page) {
+                currentPage = page;
                 
-                // Update empty state
-                if (archive.length === 0) {
-                    linksContainer.innerHTML = '';
+                // Get links for current page
+                const startIndex = (page - 1) * ITEMS_PER_PAGE;
+                const endIndex = startIndex + ITEMS_PER_PAGE;
+                const pageLinks = allLinks.slice(startIndex, endIndex);
+                
+                // Clear container
+                linksContainer.innerHTML = '';
+                
+                // Check if empty
+                if (pageLinks.length === 0) {
                     linksContainer.appendChild(emptyState);
                     emptyState.style.display = 'block';
+                    pagination.innerHTML = '';
                     return;
                 }
                 
                 // Hide empty state
                 emptyState.style.display = 'none';
                 
-                // Clear container
-                linksContainer.innerHTML = '';
-                
-                // Add each link
-                archive.forEach(link => {
+                // Add links
+                pageLinks.forEach(link => {
                     const linkElement = createLinkElement(link);
                     linksContainer.appendChild(linkElement);
                 });
                 
-                // Update search results count if there's a search term
-                if (searchInput.value.trim()) {
-                    filterLinks();
-                }
+                // Create pagination
+                createPagination();
             }
             
-            // Function to create a link element
             function createLinkElement(link) {
                 const div = document.createElement('div');
-                div.className = 'link-item';
+                div.className = 'link-card';
                 div.dataset.id = link.id;
                 
-                // Format tags
-                const tagsHtml = link.tags.map(tag => 
-                    `<span class="tag">${tag}</span>`
-                ).join('');
+                // Get flag emoji based on country
+                const flag = getCountryFlag(link.country);
                 
                 div.innerHTML = `
                     <div class="link-header">
-                        <a href="${link.url}" target="_blank" class="link-url">${link.title}</a>
-                        <div class="link-actions">
-                            <button class="action-btn btn-secondary copy-btn" data-url="${link.url}">
-                                <i class="far fa-copy"></i> Copy
-                            </button>
-                            <button class="action-btn btn-danger delete-btn" data-id="${link.id}">
-                                <i class="far fa-trash-alt"></i> Delete
-                            </button>
-                        </div>
+                        <div class="link-title">${escapeHtml(link.title)}</div>
+                        <span class="link-category">${link.category.toUpperCase()}</span>
                     </div>
-                    <div class="link-description">${link.description}</div>
-                    <div class="link-meta">
+                    
+                    <a href="${link.url}" target="_blank" class="link-url">
+                        <i class="fas fa-external-link-alt"></i> ${link.url}
+                    </a>
+                    
+                    <div class="link-description">${escapeHtml(link.description)}</div>
+                    
+                    <div class="link-footer">
                         <div>
                             <div style="margin-bottom: 5px;">
-                                <i class="fas fa-globe"></i> ${link.domain}
+                                <i class="fas fa-globe"></i> ${flag} ${link.country}
                             </div>
                             <div style="font-size: 0.85rem;">
                                 <i class="far fa-clock"></i> ${link.date}
                             </div>
                         </div>
-                        <div class="link-tags">
-                            ${tagsHtml}
+                        <div class="link-actions">
+                            <button class="action-btn copy" data-url="${link.url}">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                            <button class="action-btn view" data-url="${link.url}">
+                                <i class="fas fa-external-link-alt"></i> Visit
+                            </button>
+                            <button class="action-btn save" data-id="${link.id}">
+                                <i class="far fa-save"></i> Save
+                            </button>
                         </div>
                     </div>
                 `;
                 
                 // Add event listeners
-                const copyBtn = div.querySelector('.copy-btn');
+                const copyBtn = div.querySelector('.copy');
                 copyBtn.addEventListener('click', function() {
                     const url = this.getAttribute('data-url');
                     copyToClipboard(url);
                     showNotification('Link copied to clipboard!');
                 });
                 
-                const deleteBtn = div.querySelector('.delete-btn');
-                deleteBtn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    deleteLink(id);
+                const viewBtn = div.querySelector('.view');
+                viewBtn.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    window.open(url, '_blank');
+                });
+                
+                const saveBtn = div.querySelector('.save');
+                saveBtn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    saveLinkToBookmarks(id);
                 });
                 
                 return div;
             }
             
-            // Function to delete a link
-            function deleteLink(id) {
-                if (!confirm('Are you sure you want to delete this link?')) return;
+            function createPagination() {
+                const totalPages = Math.ceil(allLinks.length / ITEMS_PER_PAGE);
                 
-                let archive = JSON.parse(localStorage.getItem('linksArchive') || '[]');
-                archive = archive.filter(link => link.id !== id);
-                
-                localStorage.setItem('linksArchive', JSON.stringify(archive));
-                updateLinksFile();
-                loadAndDisplayLinks();
-                updateStats();
-                
-                showNotification('Link deleted from archive');
-            }
-            
-            // Function to download links file
-            function downloadLinksFile() {
-                const fileContent = localStorage.getItem('linksFile') || '';
-                
-                if (!fileContent) {
-                    showNotification('No links to download', 'error');
+                if (totalPages <= 1) {
+                    pagination.innerHTML = '';
                     return;
                 }
                 
-                const blob = new Blob([fileContent], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `links_archive_${new Date().toISOString().split('T')[0]}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                let paginationHTML = '';
                 
-                showNotification('Links file downloaded!');
-            }
-            
-            // Function to export as JSON
-            function exportAsJson() {
-                const archive = JSON.parse(localStorage.getItem('linksArchive') || '[]');
-                
-                if (archive.length === 0) {
-                    showNotification('No links to export', 'error');
-                    return;
+                // Previous button
+                if (currentPage > 1) {
+                    paginationHTML += `<button class="page-btn" data-page="${currentPage - 1}">‹ Previous</button>`;
                 }
                 
-                const jsonContent = JSON.stringify(archive, null, 2);
-                const blob = new Blob([jsonContent], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `links_archive_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                // Page numbers
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
                 
-                showNotification('Links exported as JSON!');
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                }
+                
+                // Next button
+                if (currentPage < totalPages) {
+                    paginationHTML += `<button class="page-btn" data-page="${currentPage + 1}">Next ›</button>`;
+                }
+                
+                pagination.innerHTML = paginationHTML;
+                
+                // Add event listeners to pagination buttons
+                pagination.querySelectorAll('.page-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const page = parseInt(this.getAttribute('data-page'));
+                        displayLinksPage(page);
+                    });
+                });
             }
             
-            // Function to clear all links
-            function clearAllLinks() {
-                if (!confirm('Are you sure you want to delete ALL links? This cannot be undone.')) return;
-                
-                localStorage.setItem('linksArchive', JSON.stringify([]));
-                localStorage.setItem('linksFile', '');
-                localStorage.setItem('lastUpdated', '');
-                
-                loadAndDisplayLinks();
-                updateStats();
-                
-                showNotification('All links have been cleared');
-            }
-            
-            // Function to filter links based on search input
-            function filterLinks() {
+            function filterAndDisplayLinks() {
                 const searchTerm = searchInput.value.toLowerCase().trim();
-                const allLinkItems = document.querySelectorAll('.link-item');
                 
                 if (!searchTerm) {
-                    allLinkItems.forEach(item => {
-                        item.style.display = 'block';
-                    });
+                    displayLinksPage(1);
                     return;
                 }
                 
-                let visibleCount = 0;
+                const filteredLinks = allLinks.filter(link => 
+                    link.title.toLowerCase().includes(searchTerm) ||
+                    link.description.toLowerCase().includes(searchTerm) ||
+                    link.url.toLowerCase().includes(searchTerm) ||
+                    link.category.toLowerCase().includes(searchTerm) ||
+                    link.country.toLowerCase().includes(searchTerm)
+                );
                 
-                allLinkItems.forEach(item => {
-                    const title = item.querySelector('.link-url').textContent.toLowerCase();
-                    const description = item.querySelector('.link-description').textContent.toLowerCase();
-                    const domain = item.querySelector('.link-meta div div:first-child').textContent.toLowerCase();
-                    const tags = Array.from(item.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
-                    
-                    const matches = title.includes(searchTerm) || 
-                                   description.includes(searchTerm) || 
-                                   domain.includes(searchTerm) ||
-                                   tags.some(tag => tag.includes(searchTerm));
-                    
-                    if (matches) {
-                        item.style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+                // Display filtered results
+                const startIndex = 0;
+                const endIndex = ITEMS_PER_PAGE;
+                const pageLinks = filteredLinks.slice(startIndex, endIndex);
                 
-                // Show message if no results
-                if (visibleCount === 0 && allLinkItems.length > 0) {
+                linksContainer.innerHTML = '';
+                
+                if (pageLinks.length === 0) {
                     const noResults = document.createElement('div');
                     noResults.className = 'empty-state';
                     noResults.innerHTML = `
@@ -916,93 +1060,200 @@
                         <h3>No matching links found</h3>
                         <p>Try a different search term</p>
                     `;
-                    
-                    // Temporarily show no results message
                     linksContainer.appendChild(noResults);
-                    setTimeout(() => {
-                        if (noResults.parentNode === linksContainer) {
-                            linksContainer.removeChild(noResults);
-                        }
-                    }, 2000);
-                }
-            }
-            
-            // Function to update statistics
-            function updateStats() {
-                const archive = JSON.parse(localStorage.getItem('linksArchive') || '[]');
-                const fileContent = localStorage.getItem('linksFile') || '';
-                const lastUpdated = localStorage.getItem('lastUpdated');
-                
-                // Update total links
-                totalLinksEl.textContent = archive.length;
-                
-                // Update file size
-                const sizeInBytes = new Blob([fileContent]).size;
-                const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-                fileSizeEl.textContent = `${sizeInKB} KB`;
-                
-                // Update last updated
-                if (lastUpdated) {
-                    const date = new Date(lastUpdated);
-                    lastUpdatedEl.textContent = date.toLocaleString();
+                    pagination.innerHTML = '';
                 } else {
-                    lastUpdatedEl.textContent = 'Never';
+                    pageLinks.forEach(link => {
+                        const linkElement = createLinkElement(link);
+                        linksContainer.appendChild(linkElement);
+                    });
+                    
+                    // Simple pagination for search results
+                    const totalFilteredPages = Math.ceil(filteredLinks.length / ITEMS_PER_PAGE);
+                    if (totalFilteredPages > 1) {
+                        let searchPagination = `<div style="text-align: center; margin-top: 20px; color: #666;">
+                            Showing ${pageLinks.length} of ${filteredLinks.length} results
+                        </div>`;
+                        pagination.innerHTML = searchPagination;
+                    } else {
+                        pagination.innerHTML = '';
+                    }
                 }
-                
-                // Simulate active users (random between 1-10)
-                activeUsersEl.textContent = Math.max(1, Math.floor(Math.random() * 10));
             }
             
-            // Utility functions
-            function copyToClipboard(text) {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-            }
-            
-            function showNotification(message, type = 'success') {
-                const notification = document.getElementById('notification');
-                const notificationText = document.getElementById('notificationText');
+            function viewLinksFile() {
+                // In a real implementation, this would open links.txt
+                // For demo, show the file content in a new tab
+                const fileContent = localStorage.getItem('linksTxt') || '';
                 
-                notificationText.textContent = message;
-                
-                // Set color based on type
-                if (type === 'error') {
-                    notification.style.background = 'linear-gradient(135deg, #ff4757 0%, #ff3742 100%)';
-                } else if (type === 'info') {
-                    notification.style.background = 'linear-gradient(135deg, #2ed573 0%, #1dd1a1 100%)';
-                } else {
-                    notification.style.background = 'linear-gradient(135deg, #4a6de5 0%, #3a5bd0 100%)';
+                if (!fileContent) {
+                    showNotification('No links file found', 'error');
+                    return;
                 }
                 
-                notification.classList.add('show');
+                // Create a blob and open in new tab
+                const blob = new Blob([fileContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
                 
+                showNotification('Opening links.txt file');
+            }
+            
+            function downloadLinksFile() {
+                const fileContent = localStorage.getItem('linksTxt') || '';
+                
+                if (!fileContent) {
+                    showNotification('No links file to download', 'error');
+                    return;
+                }
+                
+                const blob = new Blob([fileContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `links_${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('links.txt downloaded!');
+            }
+            
+            function clearLocalCache() {
+                if (!confirm('Clear local cache? This will not delete the global links.txt file.')) return;
+                
+                localStorage.removeItem('globalLinks');
+                localStorage.removeItem('linksTxt');
+                localStorage.removeItem('lastUpdated');
+                
+                allLinks = [];
+                displayLinksPage(1);
+                updateStats();
+                
+                showNotification('Local cache cleared. Reloading from global archive...');
+                
+                // Simulate reloading from server
                 setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
+                    loadAndDisplayLinks();
+                }, 1000);
             }
             
-            // Add sample links if archive is empty
-            if (JSON.parse(localStorage.getItem('linksArchive') || '[]').length === 0) {
+            function saveLinkToBookmarks(linkId) {
+                const link = allLinks.find(l => l.id == linkId);
+                if (!link) return;
+                
+                let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+                
+                // Check if already bookmarked
+                if (!bookmarks.some(b => b.id == linkId)) {
+                    bookmarks.push(link);
+                    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                    showNotification('Link saved to bookmarks!');
+                } else {
+                    showNotification('Link already bookmarked', 'info');
+                }
+            }
+            
+            function updateStats() {
+                const links = JSON.parse(localStorage.getItem('globalLinks') || '[]');
+                const fileContent = localStorage.getItem('linksTxt') || '';
+                
+                // Total links
+                totalLinksEl.textContent = links.length;
+                
+                // Links today
+                const today = new Date().toDateString();
+                const todayLinks = links.filter(link => 
+                    new Date(link.timestamp).toDateString() === today
+                ).length;
+                todayLinksEl.textContent = todayLinks;
+                
+                // File size
+                const sizeInBytes = new Blob([fileContent]).size;
+                const sizeInKB = (sizeInBytes / 1024).toFixed(1);
+                fileSizeEl.textContent = `${sizeInKB} KB`;
+            }
+            
+            // Add sample data if empty
+            if (JSON.parse(localStorage.getItem('globalLinks') || '[]').length === 0) {
                 addSampleLinks();
                 loadAndDisplayLinks();
                 updateStats();
             }
         }
         
-        // Function to add sample links
+        // Utility functions
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            
+            // Set color based on type
+            if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            } else if (type === 'info') {
+                notification.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function getCountryFlag(country) {
+            const countryFlags = {
+                'usa': '🇺🇸',
+                'uk': '🇬🇧',
+                'canada': '🇨🇦',
+                'australia': '🇦🇺',
+                'germany': '🇩🇪',
+                'france': '🇫🇷',
+                'japan': '🇯🇵',
+                'india': '🇮🇳',
+                'brazil': '🇧🇷',
+                'unknown': '🌐'
+            };
+            
+            const countryLower = country.toLowerCase();
+            for (const [key, flag] of Object.entries(countryFlags)) {
+                if (countryLower.includes(key)) {
+                    return flag;
+                }
+            }
+            
+            return '🌐';
+        }
+        
         function addSampleLinks() {
             const sampleLinks = [
                 {
                     id: 1,
                     url: 'https://github.com',
-                    title: 'GitHub - Code Hosting',
-                    description: 'The world\'s leading software development platform',
-                    tags: ['development', 'code', 'git'],
-                    domain: 'github.com',
+                    title: 'GitHub - Code Collaboration',
+                    description: 'Platform for version control and collaboration',
+                    category: 'technology',
+                    country: 'USA',
                     timestamp: new Date(Date.now() - 86400000).toISOString(),
                     date: new Date(Date.now() - 86400000).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -1011,15 +1262,15 @@
                         hour: '2-digit',
                         minute: '2-digit'
                     }),
-                    sharedBy: 'System'
+                    ip: 'global'
                 },
                 {
                     id: 2,
                     url: 'https://stackoverflow.com',
-                    title: 'Stack Overflow',
-                    description: 'Community for developers to learn and share knowledge',
-                    tags: ['programming', 'help', 'community'],
-                    domain: 'stackoverflow.com',
+                    title: 'Stack Overflow - Developer Community',
+                    description: 'Q&A platform for professional and enthusiast programmers',
+                    category: 'education',
+                    country: 'USA',
                     timestamp: new Date(Date.now() - 172800000).toISOString(),
                     date: new Date(Date.now() - 172800000).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -1028,15 +1279,15 @@
                         hour: '2-digit',
                         minute: '2-digit'
                     }),
-                    sharedBy: 'System'
+                    ip: 'global'
                 },
                 {
                     id: 3,
                     url: 'https://developer.mozilla.org',
                     title: 'MDN Web Docs',
-                    description: 'Resources for developers by developers',
-                    tags: ['documentation', 'web', 'learning'],
-                    domain: 'developer.mozilla.org',
+                    description: 'Resources for developers, by developers',
+                    category: 'education',
+                    country: 'Global',
                     timestamp: new Date(Date.now() - 259200000).toISOString(),
                     date: new Date(Date.now() - 259200000).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -1045,19 +1296,65 @@
                         hour: '2-digit',
                         minute: '2-digit'
                     }),
-                    sharedBy: 'System'
+                    ip: 'global'
+                },
+                {
+                    id: 4,
+                    url: 'https://youtube.com',
+                    title: 'YouTube',
+                    description: 'Video sharing platform',
+                    category: 'entertainment',
+                    country: 'USA',
+                    timestamp: new Date(Date.now() - 345600000).toISOString(),
+                    date: new Date(Date.now() - 345600000).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    ip: 'global'
+                },
+                {
+                    id: 5,
+                    url: 'https://wikipedia.org',
+                    title: 'Wikipedia',
+                    description: 'Free online encyclopedia',
+                    category: 'education',
+                    country: 'Global',
+                    timestamp: new Date(Date.now() - 432000000).toISOString(),
+                    date: new Date(Date.now() - 432000000).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    ip: 'global'
                 }
             ];
             
-            localStorage.setItem('linksArchive', JSON.stringify(sampleLinks));
-            
-            // Create file content
+            localStorage.setItem('globalLinks', JSON.stringify(sampleLinks));
+            updateLinksTxtFile(sampleLinks);
+        }
+        
+        // Helper function to update txt file
+        function updateLinksTxtFile(links) {
             let fileContent = '';
-            sampleLinks.forEach(link => {
-                fileContent += JSON.stringify(link) + '\n';
+            links.forEach(link => {
+                const line = [
+                    link.timestamp,
+                    link.url,
+                    link.title.replace(/\|/g, ' '),
+                    link.category,
+                    link.description.replace(/\|/g, ' ').replace(/\n/g, ' '),
+                    link.country
+                ].join('|');
+                
+                fileContent += line + '\n';
             });
             
-            localStorage.setItem('linksFile', fileContent);
+            localStorage.setItem('linksTxt', fileContent);
             localStorage.setItem('lastUpdated', new Date().toISOString());
         }
     </script>
