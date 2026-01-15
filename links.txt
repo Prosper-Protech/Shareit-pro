@@ -1,0 +1,5 @@
+2024-01-15T10:30:00.000Z|https://github.com|GitHub - Code Collaboration|technology|Platform for version control and collaboration|USA
+2024-01-14T14:45:00.000Z|https://stackoverflow.com|Stack Overflow - Developer Community|education|Q&A platform for professional and enthusiast programmers|USA
+2024-01-13T09:15:00.000Z|https://developer.mozilla.org|MDN Web Docs|education|Resources for developers, by developers|Global
+2024-01-12T16:20:00.000Z|https://youtube.com|YouTube|entertainment|Video sharing platform|USA
+2024-01-11T11:10:00.000Z|https://wikipedia.org|Wikipedia|education|Free online encyclopedia|Global
